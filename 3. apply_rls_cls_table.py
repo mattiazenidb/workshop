@@ -3,7 +3,7 @@ user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().us
 
 # COMMAND ----------
 
-spark.sql(f"SELECT * FROM {user_name}.initial_schema.inventory")
+display(spark.read.table(f"{user_name}.initial_schema.inventory"))
 
 # COMMAND ----------
 
