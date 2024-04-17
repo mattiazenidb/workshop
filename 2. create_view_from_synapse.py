@@ -1,24 +1,28 @@
 # Databricks notebook source
-display(spark.read.table('dit_milan_external_synapse_catalog.cdc.captured_columns').limit(1))
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE OR REPLACE VIEW dit_milan_catalog.curated_schema.synapse_curated_view AS
-# MAGIC   SELECT
-# MAGIC     object_id,
-# MAGIC     CASE 
-# MAGIC       WHEN is_account_group_member('dit_demo') THEN 'REDACTED'
-# MAGIC       ELSE column_name
-# MAGIC     END AS column_name,
-# MAGIC     column_id,
-# MAGIC     column_type,
-# MAGIC     column_ordinal,
-# MAGIC     is_computed,
-# MAGIC     masking_function
-# MAGIC   FROM dit_milan_external_synapse_catalog.cdc.captured_columns
+display(spark.read.table('federated_synapse_catalog.dbo.users').limit(1))
 
 # COMMAND ----------
 
-display(spark.read.table('dit_milan_catalog.curated_schema.synapse_curated_view').limit(1))
+spark.sql(f"""
+          CREATE OR REPLACE VIEW {user_name}.initial_schema.synapse_curated_view AS
+            SELECT
+                object_id,
+                CASE 
+                WHEN is_account_group_member('dit_demo') THEN column_name
+                ELSE 'REDACTED'
+                END AS column_name,
+                column_id,
+                column_type,
+                column_ordinal,
+                is_computed,
+                masking_function
+            FROM {user_name}.cdc.captured_columns
+          """)
+
+# COMMAND ----------
+
+display(spark.read.table(f"{user_name}.initial_schema.synapse_curated_view").limit(1))

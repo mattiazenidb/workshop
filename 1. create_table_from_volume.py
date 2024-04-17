@@ -1,5 +1,9 @@
 # Databricks notebook source
-inventory = spark.read.csv('/Volumes/dit_milan_catalog/raw_schema/raw')
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
+
+# COMMAND ----------
+
+inventory = spark.read.csv('/Volumes/landing_zone/raw/raw_volume')
 
 # COMMAND ----------
 
@@ -11,4 +15,4 @@ inventory.count()
 
 # COMMAND ----------
 
-inventory.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable('dit_milan_catalog.curated_schema.inventory')
+inventory.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(f"{user_name}.initial_schema.inventory")

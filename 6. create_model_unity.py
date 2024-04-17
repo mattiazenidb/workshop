@@ -1,10 +1,10 @@
 # Databricks notebook source
-# MAGIC %pip install --upgrade "mlflow-skinny[databricks]>=2.11.0"
-# MAGIC dbutils.library.restartPython()
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
 
 # COMMAND ----------
 
-
+# MAGIC %pip install --upgrade "mlflow-skinny[databricks]>=2.11.0"
+# MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -20,7 +20,7 @@ from sklearn.metrics import mean_squared_error
 
 mlflow.set_registry_uri("databricks-uc")
 
-dataset = mlflow.data.load_delta(table_name="dit_milan_catalog.curated_schema.warehouse_stocks_curated_features", version="0")
+dataset = mlflow.data.load_delta(table_name=f"{user_name}.initial_schema.warehouse_stocks_curated_features", version="0")
 pd_df = dataset.df.toPandas()
 X = pd_df.drop("price", axis=1)
 y = pd_df["price"]
@@ -39,8 +39,8 @@ with mlflow.start_run(run_name="Test run") as run:
 # COMMAND ----------
 
 # DBTITLE 1,mlflow register model in catalog
-catalog = "dit_milan_catalog"
-schema = "curated_schema"
+catalog = user_name
+schema = "initial_schema"
 model_name = "forecasting_model"
 mlflow.set_registry_uri("databricks-uc")
 mlflow.register_model("runs:/e66faf3bd6be46918120cfe65cc35293/rf_model", f"{catalog}.{schema}.{model_name}")
