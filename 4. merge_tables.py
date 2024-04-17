@@ -7,7 +7,7 @@ inventory = spark.read.table(f"{user_name}.initial_schema.inventory")
 
 # COMMAND ----------
 
-synapse_curated = spark.read.table(f"{user_name}.curated_schema.synapse_curated_view")
+synapse_curated = spark.read.table(f"{user_name}.initial_schema.synapse_curated_view")
 
 # COMMAND ----------
 
@@ -27,4 +27,4 @@ display(joined)
 
 # COMMAND ----------
 
-joined.write.mode('overwrite').saveAsTable(f"{user_name}.curated_schema.warehouse_stocks_curated")
+joined.write.mode('overwrite').saveAsTable(f"{user_name}.initial_schema.warehouse_stocks_curated")

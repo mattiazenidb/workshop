@@ -12,9 +12,8 @@ warehouse_stocks_curated = spark.read.table(f"{user_name}.initial_schema.warehou
 # COMMAND ----------
 
 
-warehouse_stocks_curated_features = warehouse_stocks_curated.select('column_id').withColumn('price', round(rand()*(10-5)+5,0))
-
+warehouse_stocks_curated_features = warehouse_stocks_curated.select('userid').withColumn('price', round(rand()*(10-5)+5,0))
 
 # COMMAND ----------
 
-warehouse_stocks_curated_features.write.mode('overwrite').saveAsTable(f"{user_name}.initial_schema.warehouse_stocks_curated_features')
+warehouse_stocks_curated_features.write.mode('overwrite').saveAsTable(f"{user_name}.initial_schema.warehouse_stocks_curated_features")

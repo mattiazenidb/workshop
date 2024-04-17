@@ -1,10 +1,10 @@
 # Databricks notebook source
-user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
+# MAGIC %pip install --upgrade "mlflow-skinny[databricks]>=2.11.0"
+# MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
 
-# MAGIC %pip install --upgrade "mlflow-skinny[databricks]>=2.11.0"
-# MAGIC dbutils.library.restartPython()
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
 
 # COMMAND ----------
 
@@ -43,4 +43,4 @@ catalog = user_name
 schema = "initial_schema"
 model_name = "forecasting_model"
 mlflow.set_registry_uri("databricks-uc")
-mlflow.register_model("runs:/e66faf3bd6be46918120cfe65cc35293/rf_model", f"{catalog}.{schema}.{model_name}")
+mlflow.register_model("runs:/456bdfff30b04788a19e363d4e0a6430/rf_model", f"{catalog}.{schema}.{model_name}")

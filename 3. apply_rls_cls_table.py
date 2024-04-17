@@ -7,7 +7,7 @@ display(spark.read.table(f"{user_name}.initial_schema.inventory"))
 
 # COMMAND ----------
 
-spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.rls_function (area STRING) RETURN IF(is_account_group_member('dit_group'), area == 'center', true)")
+spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.rls_function (area STRING) RETURN IF(is_account_group_member('poste_group'), true, area == 'center')")
 
 # COMMAND ----------
 
@@ -15,16 +15,15 @@ spark.sql(f"ALTER TABLE {user_name}.initial_schema.inventory SET ROW FILTER {use
 
 # COMMAND ----------
 
-display(spark.read.table(f"{user_name}.initial_schema.curated_schema.inventory"))
+display(spark.read.table(f"{user_name}.initial_schema.inventory"))
 
 # COMMAND ----------
 
-spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.cls_function (city STRING)
-RETURN IF(is_account_group_member('dit_group'), hash(city), city)")
+spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.cls_function (city STRING) RETURN IF(is_account_group_member('poste_group'), city, hash(city))")
 
 # COMMAND ----------
 
-spark.sql("ALTER TABLE {user_name}.initial_schema.inventory ALTER COLUMN city SET MASK {user_name}.initial_schema.cls_function")
+spark.sql(f"ALTER TABLE {user_name}.initial_schema.inventory ALTER COLUMN city SET MASK {user_name}.initial_schema.cls_function")
 
 # COMMAND ----------
 
