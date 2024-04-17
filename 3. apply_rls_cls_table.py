@@ -1,49 +1,39 @@
 # Databricks notebook source
-# MAGIC %sql
-# MAGIC
-# MAGIC SELECT * FROM dit_milan_catalog.curated_schema.inventory
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get().split('@')[0]
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE OR REPLACE FUNCTION dit_milan_catalog.curated_schema.rls_function (area STRING) RETURN IF(is_account_group_member('dit_group'), area == 'center', true);
+spark.sql(f"SELECT * FROM {user_name}.initial_schema.inventory")
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC ALTER TABLE dit_milan_catalog.curated_schema.inventory SET ROW FILTER dit_milan_catalog.curated_schema.rls_function ON (area);
+spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.rls_function (area STRING) RETURN IF(is_account_group_member('dit_group'), area == 'center', true)")
 
 # COMMAND ----------
 
-display(spark.read.table('dit_milan_catalog.curated_schema.inventory'))
+spark.sql(f"ALTER TABLE {user_name}.initial_schema.inventory SET ROW FILTER {user_name}.initial_schema.rls_function ON (area)");
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE OR REPLACE FUNCTION dit_milan_catalog.curated_schema.cls_function (city STRING)
-# MAGIC RETURN IF(is_account_group_member('dit_group'), hash(city), city);
+display(spark.read.table(f"{user_name}.initial_schema.curated_schema.inventory"))
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC ALTER TABLE dit_milan_catalog.curated_schema.inventory ALTER COLUMN city SET MASK dit_milan_catalog.curated_schema.cls_function;
+spark.sql(f"CREATE OR REPLACE FUNCTION {user_name}.initial_schema.cls_function (city STRING)
+RETURN IF(is_account_group_member('dit_group'), hash(city), city)")
 
 # COMMAND ----------
 
-display(spark.read.table('dit_milan_catalog.curated_schema.inventory'))
+spark.sql("ALTER TABLE {user_name}.initial_schema.inventory ALTER COLUMN city SET MASK {user_name}.initial_schema.cls_function")
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC ALTER TABLE dit_milan_catalog.curated_schema.inventory DROP ROW FILTER
+display(spark.read.table(f"{user_name}.initial_schema.inventory"))
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC ALTER TABLE dit_milan_catalog.curated_schema.inventory ALTER COLUMN city DROP MASK;
+spark.sql(f"ALTER TABLE {user_name}.initial_schema.inventory DROP ROW FILTER")
+
+# COMMAND ----------
+
+spark.sql(f"ALTER TABLE {user_name}.initial_schema.inventory ALTER COLUMN city DROP MASK")

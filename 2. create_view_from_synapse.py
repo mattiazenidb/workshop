@@ -20,7 +20,7 @@ spark.sql(f"""
                 column_ordinal,
                 is_computed,
                 masking_function
-            FROM {user_name}.cdc.captured_columns
+            FROM federated_synapse_catalog.dbo.users
           """)
 
 # COMMAND ----------
