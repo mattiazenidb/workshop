@@ -10,16 +10,13 @@ display(spark.read.table('federated_synapse_catalog.dbo.users').limit(1))
 spark.sql(f"""
           CREATE OR REPLACE VIEW {user_name}.initial_schema.synapse_curated_view AS
             SELECT
-                object_id,
-                CASE 
-                WHEN is_account_group_member('dit_demo') THEN column_name
-                ELSE 'REDACTED'
-                END AS column_name,
-                column_id,
-                column_type,
-                column_ordinal,
-                is_computed,
-                masking_function
+                userid,
+                gender,
+                age, 
+                smoker, 
+                weight,
+                bp,
+                risk
             FROM federated_synapse_catalog.dbo.users
           """)
 
